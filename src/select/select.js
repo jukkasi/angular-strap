@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.helpers.parseOptions'])
+angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.helpers.parseOptions', 'mgcrea.ngStrap.helpers.utils'])
 
   .provider('$select', function() {
 
@@ -251,7 +251,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
 
   })
 
-  .directive('bsSelect', function($window, $parse, $q, $select, $parseOptions) {
+  .directive('bsSelect', function($window, $parse, $q, $select, $parseOptions, $utils) {
 
     var defaults = $select.defaults;
 
@@ -259,7 +259,11 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
       restrict: 'EAC',
       require: 'ngModel',
       link: function postLink(scope, element, attr, controller) {
-
+		
+        if ($utils.isIE()) {
+          element[0].addEventListener('blur', $utils.selectScrollFix);
+        }
+		
         // Directive options
         var options = {scope: scope, placeholder: defaults.placeholder};
         angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'placeholder', 'allNoneButtons', 'maxLength', 'maxLengthHtml', 'allText', 'noneText', 'iconCheckmark', 'autoClose', 'id', 'sort', 'caretHtml', 'prefixClass', 'prefixEvent'], function(key) {
