@@ -1,13 +1,13 @@
 /**
  * angular-strap
- * @version v2.3.1 - 2015-07-19
+ * @version v2.3.1 - 2015-09-04
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 'use strict';
 
-angular.module('mgcrea.ngStrap.select', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.helpers.parseOptions' ]).provider('$select', function() {
+angular.module('mgcrea.ngStrap.select', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.helpers.parseOptions', 'mgcrea.ngStrap.helpers.utils' ]).provider('$select', function() {
   var defaults = this.defaults = {
     animation: 'am-fade',
     prefixClass: 'select',
@@ -101,6 +101,9 @@ angular.module('mgcrea.ngStrap.select', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.ngSt
           $select.activate(index);
           if (options.multiple) {
             controller.$setViewValue(scope.$activeIndex.map(function(index) {
+              if (angular.isUndefined(scope.$matches[index])) {
+                return null;
+              }
               return scope.$matches[index].value;
             }));
           } else {
@@ -121,6 +124,8 @@ angular.module('mgcrea.ngStrap.select', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.ngSt
           }
         } else if (scope.$activeIndex >= scope.$matches.length) {
           scope.$activeIndex = options.multiple ? [] : 0;
+        } else if (!controller.$modelValue && !options.multiple) {
+          scope.$activeIndex = -1;
         }
       };
       $select.$isVisible = function() {
@@ -197,12 +202,15 @@ angular.module('mgcrea.ngStrap.select', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.ngSt
     SelectFactory.defaults = defaults;
     return SelectFactory;
   } ];
-}).directive('bsSelect', [ '$window', '$parse', '$q', '$select', '$parseOptions', function($window, $parse, $q, $select, $parseOptions) {
+}).directive('bsSelect', [ '$window', '$parse', '$q', '$select', '$parseOptions', '$utils', function($window, $parse, $q, $select, $parseOptions, $utils) {
   var defaults = $select.defaults;
   return {
     restrict: 'EAC',
     require: 'ngModel',
     link: function postLink(scope, element, attr, controller) {
+      if ($utils.isIE()) {
+        element[0].addEventListener('blur', $utils.selectScrollFix);
+      }
       var options = {
         scope: scope,
         placeholder: defaults.placeholder
