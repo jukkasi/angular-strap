@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.1 - 2015-09-04
+ * @version v2.3.1 - 2015-09-07
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT

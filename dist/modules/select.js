@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.1 - 2015-09-04
+ * @version v2.3.1 - 2015-09-07
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -160,8 +160,10 @@ angular.module('mgcrea.ngStrap.select', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.ngSt
       };
       $select.$onKeyDown = function(evt) {
         if (!/(9|13|38|40)/.test(evt.keyCode)) return;
-        evt.preventDefault();
-        evt.stopPropagation();
+        if (evt.keyCode !== 9) {
+          evt.preventDefault();
+          evt.stopPropagation();
+        }
         if (options.multiple && evt.keyCode === 9) {
           return $select.hide();
         }
